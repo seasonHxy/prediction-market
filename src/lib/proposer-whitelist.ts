@@ -33,6 +33,11 @@ export interface ProposerWhitelistMutationResponse {
   txHashes: Hash[]
 }
 
+export interface ProposerWhitelistDeploymentResponse {
+  whitelistAddress: Address
+  txHashes: Hash[]
+}
+
 const GAS_FEE_TOO_LOW_PATTERNS = [
   'gas price below minimum',
   'transaction underpriced',
@@ -155,6 +160,14 @@ export function readProposerWhitelistError(error: unknown) {
 
   if (lower.includes('user rejected') || lower.includes('user denied') || lower.includes('rejected the request')) {
     return 'Wallet signature was rejected.'
+  }
+
+  if (
+    lower.includes('invalid string length')
+    || lower.includes('request was aborted')
+    || lower.includes('unknown rpc error')
+  ) {
+    return 'Could not update proposer whitelist.'
   }
 
   if (lower.includes('notcreator') || lower.includes('not creator')) {
